@@ -7,8 +7,9 @@
         :sort="sortable"
         :handle="handle?.length ? `.${handle}` : null"
         :disabled="isEditing || isReadonly"
+        ghost-class="ww-stack-drag-preview"
         :class="['draggable-container', `direction-${direction}`]"
-        :style="{ gap: gap, flexWrap: wrap ? 'wrap' : 'nowrap' }"
+        :style="{ gap: gap, flexWrap: wrap ? 'wrap' : 'nowrap', ...previewCssVars }"
         @change="onChange"
         @start="setDrag(true)"
         @end="setDrag(false)"
@@ -156,6 +157,15 @@ export default {
         wrap() {
             return this.wwElementState.props.wrap ?? this.content.wrap ?? false;
         },
+        previewCssVars() {
+            const p = this.wwElementState.props;
+            const c = this.content;
+            return {
+                "--ww-stack-preview-border": p.previewBorder ?? c.previewBorder ?? "2px dashed #9CA3AF",
+                "--ww-stack-preview-border-radius": p.previewBorderRadius ?? c.previewBorderRadius ?? "0px",
+                "--ww-stack-preview-background": p.previewBackground ?? c.previewBackground ?? "transparent",
+            };
+        },
     },
     watch: {
         items: {
@@ -193,6 +203,18 @@ export default {
 }
 .direction-horizontal {
     flex-direction: row;
+}
+/** DROP PREVIEW: render the ghost placeholder as a dashed outline that keeps
+    the dragged item's dimensions (visibility:hidden preserves layout). */
+.draggable-container :deep(.ww-stack-drag-preview) {
+    opacity: 1 !important;
+    background: var(--ww-stack-preview-background, transparent) !important;
+    border: var(--ww-stack-preview-border, 2px dashed #9ca3af) !important;
+    border-radius: var(--ww-stack-preview-border-radius, 0px) !important;
+    box-sizing: border-box;
+}
+.draggable-container :deep(.ww-stack-drag-preview) > * {
+    visibility: hidden !important;
 }
 /** FIX POINTER-EVENTS: ALL BREAKING DRAGGABLE ON MOBILE/TABLET (TOUCH MODE) */
 .draggable-item :deep(.ww-layout) {

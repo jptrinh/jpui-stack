@@ -18,6 +18,7 @@ export default {
             "gap",
             "showHeader",
             "showFooter",
+            ["previewBorder", "previewBorderRadius", "previewBackground"],
         ]
     },
     states: ['readonly'],
@@ -212,6 +213,70 @@ export default {
             navigator: {
                 group: "Footer",
             },
+        },
+        previewBorder: {
+            label: { en: "Preview border" },
+            type: "Border",
+            section: "style",
+            bindable: true,
+            responsive: true,
+            states: true,
+            classes: true,
+            defaultValue: "2px dashed #9CA3AF",
+            /* wwEditor:start */
+            bindingValidation: {
+                cssSupports: "border",
+                type: "string",
+                tooltip: "A CSS border shorthand for the drop preview: `2px dashed #9CA3AF` | `none`",
+            },
+            propertyHelp: {
+                tooltip: "Border of the dashed drop-placeholder shown where the item will land.",
+            },
+            /* wwEditor:end */
+        },
+        previewBorderRadius: {
+            label: { en: "Preview border radius" },
+            type: "Spacing",
+            section: "style",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 0, max: 100 },
+                    { value: "%", label: "%", min: 0, max: 100 },
+                ],
+                isCorner: true,
+                noRange: true,
+                useVar: true,
+            },
+            bindable: true,
+            responsive: true,
+            states: true,
+            classes: true,
+            defaultValue: "0px",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: "A CSS border-radius value with unit, e.g. `8px`",
+            },
+            propertyHelp: {
+                tooltip: "Corner radius of the drop-placeholder.",
+            },
+            /* wwEditor:end */
+        },
+        previewBackground: {
+            label: { en: "Preview background" },
+            type: "Color",
+            bindable: true,
+            defaultValue: "transparent",
+            section: "style",
+            propertyHelp: {
+                tooltip: "Background color of the dashed drop-placeholder.",
+            },
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: "A CSS color for the drop preview background",
+            },
+            /* wwEditor:end */
         },
     },
 };
