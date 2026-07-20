@@ -19,6 +19,12 @@ A draggable and sortable stack component based on vuedraggable that manages coll
 ***Properties:***
 - readonly: Boolean to make the stack read-only (disables drag functionality). Default: false
 - itemKey: String that specifies the property to use as unique key for items. Default: "id"
+- previewBorder: Border (shorthand) of the dashed drop-placeholder. Default: "2px dashed #9CA3AF"
+- previewBorderRadius: Corner radius of the drop-placeholder. Default: "0px"
+- previewBackground: Background color of the drop-placeholder. Default: "transparent"
+
+***Drop preview:***
+- While dragging, a placeholder is shown at the position where the item will be dropped. It matches the dragged element's dimensions but renders as a styleable dashed outline (the item's content is hidden) instead of a copy of the item.
 
 ***Events:***
 - item:moved: Triggered when an item is moved within the stack. Event data includes:
