@@ -18,7 +18,11 @@ export default {
             "gap",
             "showHeader",
             "showFooter",
-            ["previewBorder", "previewBorderRadius", "previewBackground"],
+            {
+                label: "Drop preview",
+                isCollapsible: true,
+                properties: ["previewBorder", "previewBorderRadius", "previewBackground"],
+            },
         ]
     },
     states: ['readonly'],
