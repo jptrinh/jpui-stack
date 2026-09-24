@@ -70,7 +70,24 @@ export default {
     data: () => ({
         internalItems: [],
     }),
+    mounted() {
+        this.hideDragInternals();
+    },
     methods: {
+        // SortableJS (el["Sortable<timestamp>"]) and vuedraggable (el.__draggable_component__) keep their
+        // instances on the root element. WeWeb's workflow logger walks the enumerable own properties of that
+        // element (context.thisInstance) down into Vue's reactivity graph and overflows the stack: "Maximum
+        // call stack size exceeded" in any workflow started by an item event. Non-enumerable, both libraries
+        // still read them, the logger no longer sees them.
+        hideDragInternals() {
+            const el = this.$el;
+            if (!el) return;
+            for (const key of Object.keys(el)) {
+                if (key !== "__draggable_component__" && !key.startsWith("Sortable")) continue;
+                const value = el[key];
+                Object.defineProperty(el, key, { value, enumerable: false, writable: true, configurable: true });
+            }
+        },
         onChange(change) {
             this.customHandler &&
                 this.customHandler(change, { ...this.wwElementState.props, updatedStackItems: this.internalItems });
