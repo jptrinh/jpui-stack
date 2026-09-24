@@ -22,6 +22,11 @@ A draggable and sortable stack component based on vuedraggable that manages coll
 - previewBorder: Border (shorthand) of the dashed drop-placeholder. Default: "2px dashed #9CA3AF"
 - previewBorderRadius: Corner radius of the drop-placeholder. Default: "0px"
 - previewBackground: Background color of the drop-placeholder. Default: "transparent"
+- layout: "flex" (row / column, with direction and wrap) or "grid". Default: "flex"
+- gridTemplateColumns: CSS grid-template-columns used when layout is "grid". Default: "repeat(auto-fill, minmax(128px, 1fr))"
+- rowGap / columnGap: CSS lengths (px, rem, or a var(--token, fallback)). Empty = the legacy numeric gap (px)
+- animation: Duration in ms of the items' animation while sorting. Default: 150 (0 = none)
+- In grid layout, the header and footer span the full row
 
 ***Drop preview:***
 - While dragging, a placeholder is shown at the position where the item will be dropped. It matches the dragged element's dimensions but renders as a styleable dashed outline (the item's content is hidden) instead of a copy of the item.
