@@ -13,9 +13,14 @@ export default {
             ["handleClass"],
         ],
         customStylePropertiesOrder: [
+            "layout",
             "direction",
             "wrap",
+            "gridTemplateColumns",
+            "rowGap",
+            "columnGap",
             "gap",
+            "animation",
             "showHeader",
             "showFooter",
             {
@@ -89,7 +94,29 @@ export default {
             defaultValue: true,
             section: "settings",
         },
+        layout: {
+            label: {
+                en: "Layout",
+            },
+            type: "TextSelect",
+            options: {
+                options: [
+                    { value: "flex", label: { en: "Flex (row / column)" } },
+                    { value: "grid", label: { en: "Grid" } },
+                ],
+            },
+            bindable: true,
+            defaultValue: "flex",
+            section: "style",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: 'How items are laid out: `"flex" | "grid"`',
+            },
+            /* wwEditor:end */
+        },
         direction: {
+            hidden: content => content?.layout === "grid",
             label: {
                 en: "Direction",
             },
@@ -105,6 +132,7 @@ export default {
             section: "style",
         },
         wrap: {
+            hidden: content => content?.layout === "grid",
             label: {
                 en: "Wrap",
             },
@@ -113,7 +141,79 @@ export default {
             defaultValue: false,
             section: "style",
         },
+        gridTemplateColumns: {
+            hidden: content => content?.layout !== "grid",
+            label: {
+                en: "Grid columns",
+            },
+            type: "Text",
+            bindable: true,
+            defaultValue: "repeat(auto-fill, minmax(128px, 1fr))",
+            section: "style",
+            options: {
+                placeholder: "repeat(auto-fill, minmax(128px, 1fr))",
+            },
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip:
+                    'A CSS grid-template-columns value: `"repeat(auto-fill, minmax(128px, 1fr))" | "repeat(3, 1fr)" | "200px 1fr"`',
+            },
+            propertyHelp: {
+                tooltip:
+                    "Any CSS `grid-template-columns` value. `repeat(auto-fill, minmax(128px, 1fr))` fits as many columns of at least 128px as the width allows and stretches them to fill the row.",
+            },
+            /* wwEditor:end */
+        },
+        rowGap: {
+            label: {
+                en: "Row gap",
+            },
+            type: "Length",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 0, max: 200 },
+                    { value: "rem", label: "rem", min: 0, max: 10 },
+                ],
+                noRange: true,
+                useVar: true,
+            },
+            bindable: true,
+            responsive: true,
+            section: "style",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: 'A CSS length: `"12px" | "0.75rem" | "var(--my-token, 12px)"`. Empty = the legacy Gap value.',
+            },
+            /* wwEditor:end */
+        },
+        columnGap: {
+            label: {
+                en: "Column gap",
+            },
+            type: "Length",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 0, max: 200 },
+                    { value: "rem", label: "rem", min: 0, max: 10 },
+                ],
+                noRange: true,
+                useVar: true,
+            },
+            bindable: true,
+            responsive: true,
+            section: "style",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: 'A CSS length: `"10px" | "0.625rem" | "var(--my-token, 10px)"`. Empty = the legacy Gap value.',
+            },
+            /* wwEditor:end */
+        },
+        // Legacy single gap in px, kept so existing instances don't change; Row gap / Column gap take over when set
         gap: {
+            hidden: true,
             label: {
                 en: "Gap",
             },
@@ -124,6 +224,26 @@ export default {
             bindable: true,
             defaultValue: 0,
             section: "style",
+        },
+        animation: {
+            label: {
+                en: "Sort animation (ms)",
+            },
+            type: "Number",
+            options: {
+                min: 0,
+                max: 1000,
+                step: 50,
+            },
+            bindable: true,
+            defaultValue: 150,
+            section: "style",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "number",
+                tooltip: "Duration in ms of the animation of the other items while dragging (0 = none)",
+            },
+            /* wwEditor:end */
         },
         itemElement: {
             hidden: true,

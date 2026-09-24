@@ -46,9 +46,13 @@ element, styled via the `previewBorder`, `previewBorderRadius` and `previewBackg
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| `direction` | Select | `vertical` | Stack items vertically or horizontally. |
-| `wrap` | On/Off | `false` | Wrap items onto multiple lines. |
-| `gap` | Number (px) | `0` | Space between items. |
+| `layout` | Select | `flex` | `flex` (a row or column, see Direction / Wrap) or `grid`. |
+| `direction` | Select | `vertical` | Flex only: stack items vertically or horizontally. |
+| `wrap` | On/Off | `false` | Flex only: wrap items onto multiple lines. |
+| `gridTemplateColumns` | Text | `repeat(auto-fill, minmax(128px, 1fr))` | Grid only: any CSS `grid-template-columns` value. Rows align to the top; the header and footer span the full row. |
+| `rowGap` / `columnGap` | Length | – | Space between rows / columns (px, rem or a token). Empty = the legacy Gap. |
+| `gap` | Number (px) | `0` | Legacy, hidden in the editor: the fallback for Row gap / Column gap, so existing instances keep their spacing. |
+| `animation` | Number (ms) | `150` | How long the other items take to move aside while dragging (0 = none). |
 | `showHeader` | On/Off | `false` | Show the header dropzone. |
 | `showFooter` | On/Off | `false` | Show the footer dropzone. |
 | `previewBorder` | Border | `2px dashed #9CA3AF` | Border of the drop placeholder. |

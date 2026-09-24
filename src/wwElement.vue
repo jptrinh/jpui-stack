@@ -8,8 +8,9 @@
         :handle="handle?.length ? `.${handle}` : null"
         :disabled="isEditing || isReadonly"
         ghost-class="ww-stack-drag-preview"
-        :class="['draggable-container', `direction-${direction}`]"
-        :style="{ gap: gap, flexWrap: wrap ? 'wrap' : 'nowrap', ...previewCssVars }"
+        :animation="animation"
+        :class="['draggable-container', `layout-${layout}`, `direction-${direction}`]"
+        :style="{ ...containerStyle, ...previewCssVars }"
         @change="onChange"
         @start="setDrag(true)"
         @end="setDrag(false)"
@@ -150,12 +151,39 @@ export default {
         direction() {
             return this.wwElementState.props.direction || this.content.direction || "vertical";
         },
+        layout() {
+            const value = this.wwElementState.props.layout || this.content?.layout;
+            return value === "grid" ? "grid" : "flex";
+        },
+        // Legacy single gap (number of px), the fallback for Row gap / Column gap
         gap() {
-            const value = this.wwElementState.props.gap ?? this.content.gap ?? 0;
+            const value = this.wwElementState.props.gap ?? this.content?.gap ?? 0;
             return `${value}px`;
         },
+        rowGap() {
+            return this.wwElementState.props.rowGap || this.content?.rowGap || this.gap;
+        },
+        columnGap() {
+            return this.wwElementState.props.columnGap || this.content?.columnGap || this.gap;
+        },
         wrap() {
-            return this.wwElementState.props.wrap ?? this.content.wrap ?? false;
+            return this.wwElementState.props.wrap ?? this.content?.wrap ?? false;
+        },
+        gridTemplateColumns() {
+            return (
+                this.wwElementState.props.gridTemplateColumns ||
+                this.content?.gridTemplateColumns ||
+                "repeat(auto-fill, minmax(128px, 1fr))"
+            );
+        },
+        animation() {
+            const value = Number(this.wwElementState.props.animation ?? this.content?.animation ?? 150);
+            return Number.isFinite(value) && value > 0 ? value : 0;
+        },
+        containerStyle() {
+            const gaps = { rowGap: this.rowGap, columnGap: this.columnGap };
+            if (this.layout === "grid") return { ...gaps, gridTemplateColumns: this.gridTemplateColumns };
+            return { ...gaps, flexWrap: this.wrap ? "wrap" : "nowrap" };
         },
         previewCssVars() {
             const p = this.wwElementState.props;
@@ -195,13 +223,13 @@ export default {
 </script>
 
 <style scoped>
-.draggable-container {
+.draggable-container.layout-flex {
     display: flex !important;
 }
-.direction-vertical {
+.layout-flex.direction-vertical {
     flex-direction: column;
 }
-.direction-horizontal {
+.layout-flex.direction-horizontal {
     flex-direction: row;
 }
 /** DROP PREVIEW: render the ghost placeholder as a dashed outline that keeps
@@ -215,6 +243,19 @@ export default {
 }
 .draggable-container :deep(.ww-stack-drag-preview) > * {
     visibility: hidden !important;
+}
+.draggable-container.layout-grid {
+    display: grid !important;
+    /* Rows keep their own height even when the stack is taller than its content */
+    align-content: start;
+}
+/* Header and footer span the whole row instead of taking one cell */
+.layout-grid > :not(.draggable-item) {
+    grid-column: 1 / -1;
+}
+/* Let 1fr columns shrink below their content (long file names would widen them) */
+.layout-grid > .draggable-item {
+    min-width: 0;
 }
 /** FIX POINTER-EVENTS: ALL BREAKING DRAGGABLE ON MOBILE/TABLET (TOUCH MODE) */
 .draggable-item :deep(.ww-layout) {
