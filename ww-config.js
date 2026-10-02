@@ -91,8 +91,15 @@ export default {
                 en: "Sortable",
             },
             type: "OnOff",
+            bindable: true,
             defaultValue: true,
             section: "settings",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "A boolean that defines if items can be reordered: `true | false`",
+            },
+            /* wwEditor:end */
         },
         layout: {
             label: {
@@ -269,7 +276,14 @@ export default {
             label: 'Custom drag',
             type: 'OnOff',
             section: 'settings',
+            bindable: true,
             defaultValue: false,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "A boolean that defines if dragging starts from a custom handle: `true | false`",
+            },
+            /* wwEditor:end */
             propertyHelp: {
                 tooltip: `By default, dragging is triggered when a user clicks anywhere on a Kanban item. To trigger the dragging behavior on click of a specific element inside the item:  
 * Enable this option  
