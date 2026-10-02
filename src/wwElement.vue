@@ -144,7 +144,9 @@ export default {
             return this.wwElementState.props.group ? this.wwElementState.props.group : this.content.group;
         },
         sortable() {
-            return this.wwElementState.props.sortable ? this.wwElementState.props.sortable : this.content.sortable;
+            // Always a boolean (vuedraggable reads undefined as true), and a wwProps `false` must win over content
+            const fromProps = this.wwElementState?.props?.sortable;
+            return typeof fromProps === "boolean" ? fromProps : this.content?.sortable !== false;
         },
         itemKey() {
             return this.wwElementState.props.itemKey || "id";
