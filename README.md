@@ -39,6 +39,7 @@ element, styled via the `previewBorder`, `previewBorderRadius` and `previewBackg
 | `items` | Array (bind) | `[]` | The collection of items to render and reorder. |
 | `sortable` | On/Off | `true` | Allow reordering items within the stack. |
 | `readonly` | On/Off | `false` | Disable drag-and-drop entirely. |
+| `touchDragDelay` | Number (ms) | `200` | Touch only: how long a finger must rest on an item before it drags. A finger that moves earlier scrolls the page; the mouse drags at once. `0` = drag at once (the old behaviour, which blocks scrolling over the items). |
 | `customDragHandle` | On/Off | `false` | Only start dragging from a specific handle element. |
 | `handleClass` | Text | `draggable` | Class that marks the drag handle (when Custom drag is on). Add it to an element via Settings > HTML attributes > Class. |
 
