@@ -29,6 +29,17 @@ It matches the dragged element's dimensions but renders as a styleable **dashed 
 item's content is hidden) instead of a copy of the item. The outline is SortableJS's ghost
 element, styled via the `previewBorder`, `previewBorderRadius` and `previewBackground` properties.
 
+### Item dragged
+
+The item that follows the pointer is SortableJS's fallback copy, used for the mouse as well as touch
+(`forceFallback`): the browser's native drag image is a snapshot CSS can't style. Its look is set by
+`draggedTransform` (e.g. `scale(1.05) rotate(2deg)`, applied from the grab point and animated over the
+Sort animation duration) and `draggedOpacity`. A mouse press only starts a drag after 3 px of movement, so
+clicks on items still work, and items aren't text-selectable.
+
+On drag start, the device vibrates briefly (`hapticFeedback`). Android browsers only: iOS Safari has no
+Vibration API.
+
 ## Properties
 
 ### Settings
@@ -39,6 +50,7 @@ element, styled via the `previewBorder`, `previewBorderRadius` and `previewBackg
 | `items` | Array (bind) | `[]` | The collection of items to render and reorder. |
 | `sortable` | On/Off | `true` | Allow reordering items within the stack. |
 | `readonly` | On/Off | `false` | Disable drag-and-drop entirely. |
+| `hapticFeedback` | On/Off | `true` | Vibrate briefly when an item starts dragging (Android browsers only). |
 | `touchDragDelay` | Number (ms) | `200` | Touch only: how long a finger must rest on an item before it drags. A finger that moves earlier scrolls the page; the mouse drags at once. `0` = drag at once (the old behaviour, which blocks scrolling over the items). |
 | `customDragHandle` | On/Off | `false` | Only start dragging from a specific handle element. |
 | `handleClass` | Text | `draggable` | Class that marks the drag handle (when Custom drag is on). Add it to an element via Settings > HTML attributes > Class. |
@@ -59,6 +71,8 @@ element, styled via the `previewBorder`, `previewBorderRadius` and `previewBackg
 | `previewBorder` | Border | `2px dashed #9CA3AF` | Border of the drop placeholder. |
 | `previewBorderRadius` | Spacing | `0px` | Corner radius of the drop placeholder. |
 | `previewBackground` | Color | `transparent` | Background of the drop placeholder. |
+| `draggedTransform` | Text | – | CSS transform of the item that follows the pointer, e.g. `scale(1.05) rotate(2deg)`. Empty = none. |
+| `draggedOpacity` | Number (0–1) | `0.8` | Opacity of the item that follows the pointer. |
 
 ## Slots (dropzones)
 
