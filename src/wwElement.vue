@@ -304,12 +304,9 @@ export default {
     transform-origin: inherit;
     animation: ww-stack-lift var(--ww-stack-dragged-duration, 150ms) ease-out;
 }
-/* The border is an overlay inside the item's edges: it keeps the item's size and corner radius and follows the
-   transform. Only on the copy, which nothing else lays out, so position: relative moves nothing. */
-.draggable-container :deep(.ww-stack-dragged) > * {
-    position: relative;
-}
-.draggable-container :deep(.ww-stack-dragged) > *::after {
+/* The border is an overlay inside the item's edges, on the item itself (child of wwLayout's .ww-layout wrapper) so it
+   inherits the item's corner radius. No position override: a static item falls back to the wrapper, which is relative. */
+.draggable-container :deep(.ww-stack-dragged) > .ww-layout > *::after {
     content: "";
     position: absolute;
     inset: 0;

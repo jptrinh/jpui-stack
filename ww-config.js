@@ -508,9 +508,6 @@ export default {
             type: "Border",
             section: "style",
             bindable: true,
-            responsive: true,
-            states: true,
-            classes: true,
             defaultValue: "",
             /* wwEditor:start */
             bindingValidation: {
