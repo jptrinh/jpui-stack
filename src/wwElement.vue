@@ -239,6 +239,7 @@ export default {
             return {
                 "--ww-stack-dragged-transform": p.draggedTransform || c.draggedTransform || "none",
                 "--ww-stack-dragged-opacity": Number.isFinite(opacity) ? Math.min(Math.max(opacity, 0), 1) : 0.8,
+                "--ww-stack-dragged-border": p.draggedBorder || c.draggedBorder || "none",
                 "--ww-stack-dragged-duration": `${this.animation}ms`,
             };
         },
@@ -302,6 +303,21 @@ export default {
     transform: var(--ww-stack-dragged-transform, none);
     transform-origin: inherit;
     animation: ww-stack-lift var(--ww-stack-dragged-duration, 150ms) ease-out;
+}
+/* The border is an overlay inside the item's edges: it keeps the item's size and corner radius and follows the
+   transform. Only on the copy, which nothing else lays out, so position: relative moves nothing. */
+.draggable-container :deep(.ww-stack-dragged) > * {
+    position: relative;
+}
+.draggable-container :deep(.ww-stack-dragged) > *::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: var(--ww-stack-dragged-border, none);
+    border-radius: inherit;
+    pointer-events: none;
+    /* Over the item's own positioned children; the copy is its own stacking context, so it can't go higher */
+    z-index: 2147483647;
 }
 @keyframes ww-stack-lift {
     from {
