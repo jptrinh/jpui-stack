@@ -210,10 +210,11 @@ export default {
             const value = Number(this.wwElementState.props.animation ?? this.content?.animation ?? 150);
             return Number.isFinite(value) && value > 0 ? value : 0;
         },
-        // Touch only: a finger that moves before the delay scrolls the page instead of dragging (mouse drags at once)
+        // Touch only: a finger that moves before the delay scrolls the page instead of dragging (mouse drags at once).
+        // "Moves" = past touch-start-threshold, which SortableJS forces to 1 px unless force-fallback is on.
         touchDragDelay() {
             const value = Number(this.wwElementState.props.touchDragDelay ?? this.content?.touchDragDelay ?? 200);
-            return Number.isFinite(value) && value > 0 ? value : 0;
+            return Number.isFinite(value) ? Math.min(Math.max(value, 0), 1000) : 200;
         },
         hapticFeedback() {
             return (this.wwElementState.props.hapticFeedback ?? this.content?.hapticFeedback) !== false;
