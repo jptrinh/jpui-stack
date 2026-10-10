@@ -101,7 +101,7 @@ export default {
         },
         onChange(change) {
             this.customHandler &&
-                this.customHandler(change, { ...this.wwElementState.props, updatedStackItems: this.internalItems });
+                this.customHandler(change, { ...this.wwElementState?.props, updatedStackItems: this.internalItems });
             if (change.moved) {
                 this.$emit("trigger-event", {
                     name: "item:moved",
@@ -140,19 +140,19 @@ export default {
     computed: {
         isEditing() {
             /* wwEditor:start */
-            return this.wwEditorState.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
+            return this.wwEditorState?.editMode === wwLib.wwEditorHelper.EDIT_MODES.EDITION;
             /* wwEditor:end */
             // eslint-disable-next-line no-unreachable
             return false;
         },
         items() {
-            const data = this.wwElementState.props.items ? this.wwElementState.props.items : this.content.items;
+            const data = this.wwElementState?.props?.items ? this.wwElementState?.props?.items : this.content?.items;
             const items = wwLib.wwCollection.getCollectionData(data);
             if (!Array.isArray(items)) return [];
             return items;
         },
         group() {
-            return this.wwElementState.props.group ? this.wwElementState.props.group : this.content.group;
+            return this.wwElementState?.props?.group ? this.wwElementState?.props?.group : this.content?.group;
         },
         sortable() {
             // Always a boolean (vuedraggable reads undefined as true), and a wwProps `false` must win over content
@@ -160,63 +160,64 @@ export default {
             return typeof fromProps === "boolean" ? fromProps : this.content?.sortable !== false;
         },
         itemKey() {
-            return this.wwElementState.props.itemKey || "id";
+            return this.wwElementState?.props?.itemKey || "id";
         },
         handle() {
-            return this.wwElementState.props.handle?.length
-                ? this.wwElementState.props.handle
-                : this.content.customDragHandle
-                ? this.content.handleClass || "draggable"
+            return this.wwElementState?.props?.handle?.length
+                ? this.wwElementState?.props?.handle
+                : this.content?.customDragHandle
+                ? this.content?.handleClass || "draggable"
                 : null;
         },
         isReadonly() {
             /* wwEditor:start */
-            if (this.wwEditorState.isSelected) {
-                return this.wwElementState.states.includes("readonly");
+            if (this.wwEditorState?.isSelected) {
+                return !!this.wwElementState?.states?.includes("readonly");
             }
             /* wwEditor:end */
             // Ensure to return a boolean as vuedraggable interpret undefined as true
-            return !!(this.wwElementState.props.readonly || this.content.readonly);
+            return !!(this.wwElementState?.props?.readonly || this.content?.readonly);
         },
         direction() {
-            return this.wwElementState.props.direction || this.content.direction || "vertical";
+            return this.wwElementState?.props?.direction || this.content?.direction || "vertical";
         },
         layout() {
-            const value = this.wwElementState.props.layout || this.content?.layout;
+            const value = this.wwElementState?.props?.layout || this.content?.layout;
             return value === "grid" ? "grid" : "flex";
         },
         // Legacy single gap (number of px), the fallback for Row gap / Column gap
         gap() {
-            const value = this.wwElementState.props.gap ?? this.content?.gap ?? 0;
+            const value = this.wwElementState?.props?.gap ?? this.content?.gap ?? 0;
             return `${value}px`;
         },
         rowGap() {
-            return this.wwElementState.props.rowGap || this.content?.rowGap || this.gap;
+            return this.wwElementState?.props?.rowGap || this.content?.rowGap || this.gap;
         },
         columnGap() {
-            return this.wwElementState.props.columnGap || this.content?.columnGap || this.gap;
+            return this.wwElementState?.props?.columnGap || this.content?.columnGap || this.gap;
         },
         wrap() {
-            return this.wwElementState.props.wrap ?? this.content?.wrap ?? false;
+            return this.wwElementState?.props?.wrap ?? this.content?.wrap ?? false;
         },
         gridTemplateColumns() {
             return (
-                this.wwElementState.props.gridTemplateColumns ||
+                this.wwElementState?.props?.gridTemplateColumns ||
                 this.content?.gridTemplateColumns ||
                 "repeat(auto-fill, minmax(128px, 1fr))"
             );
         },
         animation() {
-            const value = Number(this.wwElementState.props.animation ?? this.content?.animation ?? 150);
+            const value = Number(this.wwElementState?.props?.animation ?? this.content?.animation ?? 150);
             return Number.isFinite(value) && value > 0 ? value : 0;
         },
-        // Touch only: a finger that moves before the delay scrolls the page instead of dragging (mouse drags at once)
+        // Touch only: a finger that moves before the delay scrolls the page instead of dragging (mouse drags at once).
+        // "Moves" = past touch-start-threshold, which SortableJS forces to 1 px unless force-fallback is on.
         touchDragDelay() {
-            const value = Number(this.wwElementState.props.touchDragDelay ?? this.content?.touchDragDelay ?? 200);
-            return Number.isFinite(value) && value > 0 ? value : 0;
+            const value = Number(this.wwElementState?.props?.touchDragDelay ?? this.content?.touchDragDelay ?? 200);
+            return Number.isFinite(value) ? Math.min(Math.max(value, 0), 1000) : 200;
         },
         hapticFeedback() {
-            return (this.wwElementState.props.hapticFeedback ?? this.content?.hapticFeedback) !== false;
+            return (this.wwElementState?.props?.hapticFeedback ?? this.content?.hapticFeedback) !== false;
         },
         containerStyle() {
             const gaps = { rowGap: this.rowGap, columnGap: this.columnGap };
@@ -224,8 +225,8 @@ export default {
             return { ...gaps, flexWrap: this.wrap ? "wrap" : "nowrap" };
         },
         previewCssVars() {
-            const p = this.wwElementState.props;
-            const c = this.content;
+            const p = this.wwElementState?.props ?? {};
+            const c = this.content ?? {};
             return {
                 "--ww-stack-preview-border": p.previewBorder ?? c.previewBorder ?? "2px dashed #9CA3AF",
                 "--ww-stack-preview-border-radius": p.previewBorderRadius ?? c.previewBorderRadius ?? "0px",
@@ -233,12 +234,13 @@ export default {
             };
         },
         draggedCssVars() {
-            const p = this.wwElementState.props;
-            const c = this.content;
+            const p = this.wwElementState?.props ?? {};
+            const c = this.content ?? {};
             const opacity = Number(p.draggedOpacity ?? c.draggedOpacity ?? 0.8);
             return {
                 "--ww-stack-dragged-transform": p.draggedTransform || c.draggedTransform || "none",
                 "--ww-stack-dragged-opacity": Number.isFinite(opacity) ? Math.min(Math.max(opacity, 0), 1) : 0.8,
+                "--ww-stack-dragged-border": p.draggedBorder || c.draggedBorder || "none",
                 "--ww-stack-dragged-duration": `${this.animation}ms`,
             };
         },
@@ -253,7 +255,7 @@ export default {
         },
         isDragging(value) {
             if (this.customDragHandler) {
-                this.customDragHandler(value, { ...this.wwElementState.props });
+                this.customDragHandler(value, { ...this.wwElementState?.props });
             }
         },
         isReadonly: {
@@ -302,6 +304,18 @@ export default {
     transform: var(--ww-stack-dragged-transform, none);
     transform-origin: inherit;
     animation: ww-stack-lift var(--ww-stack-dragged-duration, 150ms) ease-out;
+}
+/* The border is an overlay inside the item's edges, on the item itself (child of wwLayout's .ww-layout wrapper) so it
+   inherits the item's corner radius. No position override: a static item falls back to the wrapper, which is relative. */
+.draggable-container :deep(.ww-stack-dragged) > .ww-layout > *::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: var(--ww-stack-dragged-border, none);
+    border-radius: inherit;
+    pointer-events: none;
+    /* Over the item's own positioned children; the copy is its own stacking context, so it can't go higher */
+    z-index: 2147483647;
 }
 @keyframes ww-stack-lift {
     from {

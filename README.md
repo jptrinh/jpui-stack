@@ -34,8 +34,9 @@ element, styled via the `previewBorder`, `previewBorderRadius` and `previewBackg
 The item that follows the pointer is SortableJS's fallback copy, used for the mouse as well as touch
 (`forceFallback`): the browser's native drag image is a snapshot CSS can't style. Its look is set by
 `draggedTransform` (e.g. `scale(1.05) rotate(2deg)`, applied from the grab point and animated over the
-Sort animation duration) and `draggedOpacity`. A mouse press only starts a drag after 3 px of movement, so
-clicks on items still work, and items aren't text-selectable.
+Sort animation duration), `draggedOpacity` and `draggedBorder` (an overlay drawn by the item's `::after`, inside
+its edges, over its content: it keeps the item's size and corner radius and follows the transform). A mouse press
+only starts a drag after 3 px of movement, so clicks on items still work, and items aren't text-selectable.
 
 On drag start, the device vibrates briefly (`hapticFeedback`). Android browsers only: iOS Safari has no
 Vibration API.
@@ -73,6 +74,7 @@ Vibration API.
 | `previewBackground` | Color | `transparent` | Background of the drop placeholder. |
 | `draggedTransform` | Text | – | CSS transform of the item that follows the pointer, e.g. `scale(1.05) rotate(2deg)`. Empty = none. |
 | `draggedOpacity` | Number (0–1) | `0.8` | Opacity of the item that follows the pointer. |
+| `draggedBorder` | Border | – | Border of the item that follows the pointer, drawn inside its edges (same size, same corner radius). Empty = none. |
 
 ## Slots (dropzones)
 

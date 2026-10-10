@@ -33,7 +33,7 @@ export default {
             {
                 label: "Item dragged",
                 isCollapsible: true,
-                properties: ["draggedTransform", "draggedOpacity"],
+                properties: ["draggedTransform", "draggedOpacity", "draggedBorder"],
             },
         ]
     },
@@ -500,6 +500,24 @@ export default {
             bindingValidation: {
                 type: "number",
                 tooltip: "Opacity of the item that follows the pointer while dragging, from 0 to 1",
+            },
+            /* wwEditor:end */
+        },
+        draggedBorder: {
+            label: { en: "Border" },
+            type: "Border",
+            section: "style",
+            bindable: true,
+            defaultValue: "",
+            /* wwEditor:start */
+            bindingValidation: {
+                cssSupports: "border",
+                type: "string",
+                tooltip: "A CSS border shorthand for the item that follows the pointer: `2px solid #3B82F6` | `none`",
+            },
+            propertyHelp: {
+                tooltip:
+                    "Border drawn inside the edges of the copy that follows the pointer while dragging, over its content and with its corner radius. It doesn't change the item's size. Empty = none.",
             },
             /* wwEditor:end */
         },
