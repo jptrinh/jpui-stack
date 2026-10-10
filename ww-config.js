@@ -10,6 +10,7 @@ export default {
             "sortable",
             "readonly",
             "touchDragDelay",
+            "hapticFeedback",
             "customDragHandle",
             ["handleClass"],
         ],
@@ -28,6 +29,11 @@ export default {
                 label: "Drop preview",
                 isCollapsible: true,
                 properties: ["previewBorder", "previewBorderRadius", "previewBackground"],
+            },
+            {
+                label: "Item dragged",
+                isCollapsible: true,
+                properties: ["draggedTransform", "draggedOpacity"],
             },
         ]
     },
@@ -276,6 +282,24 @@ export default {
             },
             /* wwEditor:end */
         },
+        hapticFeedback: {
+            label: {
+                en: "Haptic on drag start",
+            },
+            type: "OnOff",
+            bindable: true,
+            defaultValue: true,
+            section: "settings",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "boolean",
+                tooltip: "A boolean that defines if the device vibrates briefly when an item starts dragging: `true | false`",
+            },
+            propertyHelp: {
+                tooltip: "A short vibration when an item lifts. Android browsers only: iOS Safari doesn't let web pages vibrate.",
+            },
+            /* wwEditor:end */
+        },
         itemElement: {
             hidden: true,
             defaultValue: [{ isWwObject: true, type: "ww-flexbox" }],
@@ -437,6 +461,45 @@ export default {
             bindingValidation: {
                 type: "string",
                 tooltip: "A CSS color for the drop preview background",
+            },
+            /* wwEditor:end */
+        },
+        draggedTransform: {
+            label: { en: "Transform" },
+            type: "Text",
+            section: "style",
+            bindable: true,
+            defaultValue: "",
+            options: {
+                placeholder: "scale(1.05) rotate(2deg)",
+            },
+            /* wwEditor:start */
+            bindingValidation: {
+                cssSupports: "transform",
+                type: "string",
+                tooltip: 'A CSS transform for the item that follows the pointer: `"scale(1.05) rotate(2deg)"` | `"none"`',
+            },
+            propertyHelp: {
+                tooltip:
+                    "CSS transform of the copy that follows the pointer while dragging, applied from the grab point and animated over the Sort animation duration. Empty = none.",
+            },
+            /* wwEditor:end */
+        },
+        draggedOpacity: {
+            label: { en: "Opacity" },
+            type: "Number",
+            section: "style",
+            options: {
+                min: 0,
+                max: 1,
+                step: 0.05,
+            },
+            bindable: true,
+            defaultValue: 0.8,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "number",
+                tooltip: "Opacity of the item that follows the pointer while dragging, from 0 to 1",
             },
             /* wwEditor:end */
         },

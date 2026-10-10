@@ -8,14 +8,17 @@
         :handle="handle?.length ? `.${handle}` : null"
         :disabled="isEditing || isReadonly"
         ghost-class="ww-stack-drag-preview"
+        drag-class="ww-stack-dragged"
+        :force-fallback="true"
+        :fallback-tolerance="3"
         :animation="animation"
         :delay="touchDragDelay"
         :delay-on-touch-only="true"
         :touch-start-threshold="5"
         :class="['draggable-container', `layout-${layout}`, `direction-${direction}`, { 'is-draggable': !isEditing && !isReadonly }]"
-        :style="{ ...containerStyle, ...previewCssVars }"
+        :style="{ ...containerStyle, ...previewCssVars, ...draggedCssVars }"
         @change="onChange"
-        @start="setDrag(true)"
+        @start="onStart"
         @end="setDrag(false)"
     >
         <template v-if="content?.showHeader" #header>
@@ -90,6 +93,11 @@ export default {
                 const value = el[key];
                 Object.defineProperty(el, key, { value, enumerable: false, writable: true, configurable: true });
             }
+        },
+        onStart() {
+            this.setDrag(true);
+            // Android browsers only: iOS Safari has no Vibration API
+            if (this.hapticFeedback) navigator.vibrate?.(10);
         },
         onChange(change) {
             this.customHandler &&
@@ -207,6 +215,9 @@ export default {
             const value = Number(this.wwElementState.props.touchDragDelay ?? this.content?.touchDragDelay ?? 200);
             return Number.isFinite(value) && value > 0 ? value : 0;
         },
+        hapticFeedback() {
+            return (this.wwElementState.props.hapticFeedback ?? this.content?.hapticFeedback) !== false;
+        },
         containerStyle() {
             const gaps = { rowGap: this.rowGap, columnGap: this.columnGap };
             if (this.layout === "grid") return { ...gaps, gridTemplateColumns: this.gridTemplateColumns };
@@ -219,6 +230,16 @@ export default {
                 "--ww-stack-preview-border": p.previewBorder ?? c.previewBorder ?? "2px dashed #9CA3AF",
                 "--ww-stack-preview-border-radius": p.previewBorderRadius ?? c.previewBorderRadius ?? "0px",
                 "--ww-stack-preview-background": p.previewBackground ?? c.previewBackground ?? "transparent",
+            };
+        },
+        draggedCssVars() {
+            const p = this.wwElementState.props;
+            const c = this.content;
+            const opacity = Number(p.draggedOpacity ?? c.draggedOpacity ?? 0.8);
+            return {
+                "--ww-stack-dragged-transform": p.draggedTransform || c.draggedTransform || "none",
+                "--ww-stack-dragged-opacity": Number.isFinite(opacity) ? Math.min(Math.max(opacity, 0), 1) : 0.8,
+                "--ww-stack-dragged-duration": `${this.animation}ms`,
             };
         },
     },
@@ -271,6 +292,22 @@ export default {
 .draggable-container :deep(.ww-stack-drag-preview) > * {
     visibility: hidden !important;
 }
+/** DRAGGED ITEM: the copy that follows the pointer (SortableJS fallback, forced so the mouse gets it too: the
+    browser's native drag image is a snapshot CSS can't style). SortableJS moves the copy with an inline
+    translate3d and sets its opacity inline, so the transform goes on its child, and grows from the grab point. */
+.draggable-container :deep(.ww-stack-dragged) {
+    opacity: var(--ww-stack-dragged-opacity, 0.8) !important;
+}
+.draggable-container :deep(.ww-stack-dragged) > * {
+    transform: var(--ww-stack-dragged-transform, none);
+    transform-origin: inherit;
+    animation: ww-stack-lift var(--ww-stack-dragged-duration, 150ms) ease-out;
+}
+@keyframes ww-stack-lift {
+    from {
+        transform: none;
+    }
+}
 .draggable-container.layout-grid {
     display: grid !important;
     /* Rows keep their own height even when the stack is taller than its content */
@@ -284,12 +321,16 @@ export default {
 .layout-grid > .draggable-item {
     min-width: 0;
 }
-/* A long press must not open the iOS image / link callout or select text */
+/* Pressing an item must not select text: the drag starts after a few px (mouse) or a delay (touch), and native
+   drag used to block selection on its own */
+.is-draggable > .draggable-item {
+    -webkit-user-select: none;
+    user-select: none;
+}
+/* A long press must not open the iOS image / link callout */
 @media (pointer: coarse) {
     .is-draggable > .draggable-item {
         -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
     }
 }
 /** FIX POINTER-EVENTS: ALL BREAKING DRAGGABLE ON MOBILE/TABLET (TOUCH MODE) */
