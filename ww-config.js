@@ -9,6 +9,7 @@ export default {
             "items",
             "sortable",
             "readonly",
+            "touchDragDelay",
             "customDragHandle",
             ["handleClass"],
         ],
@@ -249,6 +250,29 @@ export default {
             bindingValidation: {
                 type: "number",
                 tooltip: "Duration in ms of the animation of the other items while dragging (0 = none)",
+            },
+            /* wwEditor:end */
+        },
+        touchDragDelay: {
+            label: {
+                en: "Touch drag delay (ms)",
+            },
+            type: "Number",
+            options: {
+                min: 0,
+                max: 1000,
+                step: 50,
+            },
+            bindable: true,
+            defaultValue: 200,
+            section: "settings",
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "number",
+                tooltip: "How long in ms a finger must rest on an item before it drags (0 = at once). Touch only",
+            },
+            propertyHelp: {
+                tooltip: "On a touch screen, a finger that moves before this delay scrolls the page instead of dragging the item. The mouse always drags at once.",
             },
             /* wwEditor:end */
         },

@@ -18,6 +18,7 @@ A draggable and sortable stack component based on vuedraggable that manages coll
 
 ***Properties:***
 - readonly: Boolean to make the stack read-only (disables drag functionality). Default: false
+- touchDragDelay: Touch only, ms a finger must rest on an item before it drags; moving earlier scrolls the page. The mouse drags at once. Default: 200 (0 = at once)
 - itemKey: String that specifies the property to use as unique key for items. Default: "id"
 - previewBorder: Border (shorthand) of the dashed drop-placeholder. Default: "2px dashed #9CA3AF"
 - previewBorderRadius: Corner radius of the drop-placeholder. Default: "0px"

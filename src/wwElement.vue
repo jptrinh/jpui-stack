@@ -9,7 +9,10 @@
         :disabled="isEditing || isReadonly"
         ghost-class="ww-stack-drag-preview"
         :animation="animation"
-        :class="['draggable-container', `layout-${layout}`, `direction-${direction}`]"
+        :delay="touchDragDelay"
+        :delay-on-touch-only="true"
+        :touch-start-threshold="5"
+        :class="['draggable-container', `layout-${layout}`, `direction-${direction}`, { 'is-draggable': !isEditing && !isReadonly }]"
         :style="{ ...containerStyle, ...previewCssVars }"
         @change="onChange"
         @start="setDrag(true)"
@@ -199,6 +202,11 @@ export default {
             const value = Number(this.wwElementState.props.animation ?? this.content?.animation ?? 150);
             return Number.isFinite(value) && value > 0 ? value : 0;
         },
+        // Touch only: a finger that moves before the delay scrolls the page instead of dragging (mouse drags at once)
+        touchDragDelay() {
+            const value = Number(this.wwElementState.props.touchDragDelay ?? this.content?.touchDragDelay ?? 200);
+            return Number.isFinite(value) && value > 0 ? value : 0;
+        },
         containerStyle() {
             const gaps = { rowGap: this.rowGap, columnGap: this.columnGap };
             if (this.layout === "grid") return { ...gaps, gridTemplateColumns: this.gridTemplateColumns };
@@ -275,6 +283,14 @@ export default {
 /* Let 1fr columns shrink below their content (long file names would widen them) */
 .layout-grid > .draggable-item {
     min-width: 0;
+}
+/* A long press must not open the iOS image / link callout or select text */
+@media (pointer: coarse) {
+    .is-draggable > .draggable-item {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
 }
 /** FIX POINTER-EVENTS: ALL BREAKING DRAGGABLE ON MOBILE/TABLET (TOUCH MODE) */
 .draggable-item :deep(.ww-layout) {
