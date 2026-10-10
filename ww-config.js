@@ -33,7 +33,7 @@ export default {
             {
                 label: "Item dragged",
                 isCollapsible: true,
-                properties: ["draggedTransform", "draggedOpacity", "draggedBorder"],
+                properties: ["draggedTransform", "draggedOpacity", "draggedBorder", "draggedBorderRadius"],
             },
         ]
     },
@@ -518,6 +518,31 @@ export default {
             propertyHelp: {
                 tooltip:
                     "Border drawn inside the edges of the copy that follows the pointer while dragging, over its content and with its corner radius. It doesn't change the item's size. Empty = none.",
+            },
+            /* wwEditor:end */
+        },
+        draggedBorderRadius: {
+            label: { en: "Border radius" },
+            type: "Spacing",
+            section: "style",
+            options: {
+                unitChoices: [
+                    { value: "px", label: "px", min: 0, max: 100 },
+                    { value: "%", label: "%", min: 0, max: 100 },
+                ],
+                isCorner: true,
+                noRange: true,
+                useVar: true,
+            },
+            bindable: true,
+            /* wwEditor:start */
+            bindingValidation: {
+                type: "string",
+                tooltip: "A CSS border-radius value with unit for the item that follows the pointer, e.g. `12px`",
+            },
+            propertyHelp: {
+                tooltip:
+                    "Corner radius of the copy that follows the pointer while dragging: clips its content, and the Border follows it. Empty = the item's own radius.",
             },
             /* wwEditor:end */
         },

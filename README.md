@@ -75,6 +75,7 @@ Vibration API.
 | `draggedTransform` | Text | – | CSS transform of the item that follows the pointer, e.g. `scale(1.05) rotate(2deg)`. Empty = none. |
 | `draggedOpacity` | Number (0–1) | `0.8` | Opacity of the item that follows the pointer. |
 | `draggedBorder` | Border | – | Border of the item that follows the pointer, drawn inside its edges (same size, same corner radius). Empty = none. |
+| `draggedBorderRadius` | Spacing (corners) | – | Corner radius of the item that follows the pointer; clips its content, and `draggedBorder` follows it. Empty = the item's own radius. |
 
 ## Slots (dropzones)
 

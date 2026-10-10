@@ -15,7 +15,7 @@
         :delay="touchDragDelay"
         :delay-on-touch-only="true"
         :touch-start-threshold="5"
-        :class="['draggable-container', `layout-${layout}`, `direction-${direction}`, { 'is-draggable': !isEditing && !isReadonly }]"
+        :class="['draggable-container', `layout-${layout}`, `direction-${direction}`, { 'is-draggable': !isEditing && !isReadonly, 'has-dragged-radius': !!draggedBorderRadius }]"
         :style="{ ...containerStyle, ...previewCssVars, ...draggedCssVars }"
         @change="onChange"
         @start="onStart"
@@ -241,8 +241,14 @@ export default {
                 "--ww-stack-dragged-transform": p.draggedTransform || c.draggedTransform || "none",
                 "--ww-stack-dragged-opacity": Number.isFinite(opacity) ? Math.min(Math.max(opacity, 0), 1) : 0.8,
                 "--ww-stack-dragged-border": p.draggedBorder || c.draggedBorder || "none",
+                "--ww-stack-dragged-border-radius": this.draggedBorderRadius || "0px",
                 "--ww-stack-dragged-duration": `${this.animation}ms`,
             };
+        },
+        // Empty = the item keeps its own radius (the CSS rule only applies through the has-dragged-radius class)
+        draggedBorderRadius() {
+            const value = this.wwElementState?.props?.draggedBorderRadius || this.content?.draggedBorderRadius;
+            return typeof value === "string" ? value.trim() : "";
         },
     },
     watch: {
@@ -304,6 +310,11 @@ export default {
     transform: var(--ww-stack-dragged-transform, none);
     transform-origin: inherit;
     animation: ww-stack-lift var(--ww-stack-dragged-duration, 150ms) ease-out;
+}
+/* !important: the item's own radius may be inline. overflow clips the item's content to the new corners. */
+.draggable-container.has-dragged-radius :deep(.ww-stack-dragged) > .ww-layout > * {
+    border-radius: var(--ww-stack-dragged-border-radius, 0px) !important;
+    overflow: hidden !important;
 }
 /* The border is an overlay inside the item's edges, on the item itself (child of wwLayout's .ww-layout wrapper) so it
    inherits the item's corner radius. No position override: a static item falls back to the wrapper, which is relative. */

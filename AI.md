@@ -26,6 +26,7 @@ A draggable and sortable stack component based on vuedraggable that manages coll
 - draggedTransform: CSS transform of the item that follows the pointer while dragging, from the grab point (e.g. "scale(1.05) rotate(2deg)"). Default: "" (none)
 - draggedOpacity: Opacity (0-1) of the item that follows the pointer. Default: 0.8
 - draggedBorder: CSS border shorthand of the item that follows the pointer (e.g. "2px solid #3B82F6"), drawn as an overlay inside its edges: same size, same corner radius, follows draggedTransform. Default: "" (none)
+- draggedBorderRadius: CSS border-radius of the item that follows the pointer (e.g. "12px"); clips its content, and draggedBorder follows it. Default: empty (the item keeps its own radius)
 - hapticFeedback: Vibrate briefly when an item starts dragging (Android browsers only, iOS Safari has no Vibration API). Default: true
 - layout: "flex" (row / column, with direction and wrap) or "grid". Default: "flex"
 - gridTemplateColumns: CSS grid-template-columns used when layout is "grid". Default: "repeat(auto-fill, minmax(128px, 1fr))"
@@ -37,7 +38,7 @@ A draggable and sortable stack component based on vuedraggable that manages coll
 - While dragging, a placeholder is shown at the position where the item will be dropped. It matches the dragged element's dimensions but renders as a styleable dashed outline (the item's content is hidden) instead of a copy of the item.
 
 ***Item dragged:***
-- The item that follows the pointer is SortableJS's fallback copy, forced for the mouse too (forceFallback) so draggedTransform / draggedOpacity / draggedBorder apply. A mouse press drags after 3 px of movement; items aren't text-selectable.
+- The item that follows the pointer is SortableJS's fallback copy, forced for the mouse too (forceFallback) so draggedTransform / draggedOpacity / draggedBorder / draggedBorderRadius apply. A mouse press drags after 3 px of movement; items aren't text-selectable.
 
 ***Events:***
 - item:moved: Triggered when an item is moved within the stack. Event data includes:
